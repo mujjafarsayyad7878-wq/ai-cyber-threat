@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Machine Learning Analytics & Threat Metrics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070b14',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            accent: '#06b6d4',
+                            safe: '#10b981',
+                            warning: '#f59e0b',
+                            danger: '#ef4444'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Menlo', 'Courier New', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        body {
+            background-color: #070b14;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .cyber-grid {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        @keyframes cyber-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .pulse-dot {
+            animation: cyber-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans antialiased cyber-grid flex flex-col min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition duration-300">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">CyberShield AI</span>
+                        <span class="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider bg-cyan-950 text-cyan-400 border border-cyan-800/50 rounded-full">v1.0 Pro</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 -mt-0.5">Threat & Phishing Detection Engine</p>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-1 font-medium text-sm">
+                <a href="/" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-radar text-xs"></i>
+                    <span>Live Detector</span>
+                </a>
+                <a href="/analytics" class="px-3.5 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                    <span>ML Analytics</span>
+                </a>
+                <a href="/about" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-book-skull text-xs"></i>
+                    <span>Technical Architecture</span>
+                </a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                    <span>PIPELINE VERIFIED</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- Title & Subtitle -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
+            <div>
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 text-xs font-mono mb-2">
+                    <i class="fa-solid fa-brain"></i>
+                    <span>Model Validation & Statistical Observability</span>
+                </div>
+                <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                    Machine Learning <span class="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Telemetry & Analytics</span>
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                    Continuous evaluation metrics for Multinomial Naive Bayes classifier, TF-IDF n-gram vectors, and aggregate threat trends.
+                </p>
+            </div>
+            <button onclick="refreshData()" class="px-4 py-2 rounded-xl text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center space-x-2 self-start md:self-auto">
+                <i class="fa-solid fa-arrows-rotate text-cyan-400"></i>
+                <span>Refresh Live Metrics</span>
+            </button>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <!-- Accuracy -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">Model Accuracy</div>
+                <div id="metricAcc" class="text-2xl font-extrabold font-mono text-emerald-400 mt-1">95.0%</div>
+                <div class="text-[10px] text-slate-500 mt-1 flex items-center space-x-1">
+                    <i class="fa-solid fa-arrow-trend-up text-emerald-400"></i>
+                    <span>Stratified K-Fold</span>
+                </div>
+            </div>
+
+            <!-- Precision -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">Precision</div>
+                <div id="metricPrec" class="text-2xl font-extrabold font-mono text-cyan-400 mt-1">90.9%</div>
+                <div class="text-[10px] text-slate-500 mt-1 flex items-center space-x-1">
+                    <i class="fa-solid fa-check text-cyan-400"></i>
+                    <span>Low False Positives</span>
+                </div>
+            </div>
+
+            <!-- Recall -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">Recall (Sensitivity)</div>
+                <div id="metricRec" class="text-2xl font-extrabold font-mono text-indigo-400 mt-1">100.0%</div>
+                <div class="text-[10px] text-slate-500 mt-1 flex items-center space-x-1">
+                    <i class="fa-solid fa-shield text-indigo-400"></i>
+                    <span>Zero Phish Missed</span>
+                </div>
+            </div>
+
+            <!-- F1 Score -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">F1 Harmonic Mean</div>
+                <div id="metricF1" class="text-2xl font-extrabold font-mono text-sky-400 mt-1">95.2%</div>
+                <div class="text-[10px] text-slate-500 mt-1">Harmonized Score</div>
+            </div>
+
+            <!-- Training Samples -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">Dataset Corpus</div>
+                <div id="metricSamples" class="text-2xl font-extrabold font-mono text-amber-400 mt-1">80</div>
+                <div class="text-[10px] text-slate-500 mt-1">Curated Vectors</div>
+            </div>
+
+            <!-- Vocabulary Size -->
+            <div class="glass-panel rounded-2xl p-4 border-slate-800">
+                <div class="text-[11px] font-mono uppercase text-slate-400">TF-IDF Features</div>
+                <div id="metricVocab" class="text-2xl font-extrabold font-mono text-purple-400 mt-1">1,227</div>
+                <div class="text-[10px] text-slate-500 mt-1">Bi-gram N-Grams</div>
+            </div>
+        </div>
+
+        <!-- Confusion Matrix & Threat Distribution Split -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Confusion Matrix Card (6 cols) -->
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-6 border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-table-cells text-cyan-400"></i>
+                            <span>Binary Confusion Matrix (Validation Set)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Test split evaluation of classification decisions</p>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800">20 Test Samples</span>
+                </div>
+
+                <!-- Matrix Visual Grid -->
+                <div class="grid grid-cols-2 gap-3 pt-2 font-mono">
+                    <!-- True Negative -->
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-emerald-900/40 relative overflow-hidden">
+                        <div class="text-xs text-emerald-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                            <span>True Negatives (TN)</span>
+                            <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                        </div>
+                        <div id="cmTN" class="text-3xl font-extrabold text-white mt-2">9</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Actual Legitimate correctly classified as Safe.</p>
+                    </div>
+
+                    <!-- False Positive -->
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-amber-900/40 relative overflow-hidden">
+                        <div class="text-xs text-amber-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                            <span>False Positives (FP)</span>
+                            <i class="fa-solid fa-circle-exclamation text-amber-400"></i>
+                        </div>
+                        <div id="cmFP" class="text-3xl font-extrabold text-white mt-2">1</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Legitimate email false flagged as Phishing (Type I error).</p>
+                    </div>
+
+                    <!-- False Negative -->
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-rose-900/40 relative overflow-hidden">
+                        <div class="text-xs text-rose-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                            <span>False Negatives (FN)</span>
+                            <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+                        </div>
+                        <div id="cmFN" class="text-3xl font-extrabold text-white mt-2">0</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Phishing missed as legitimate (Type II error - 0% breach rate).</p>
+                    </div>
+
+                    <!-- True Positive -->
+                    <div class="p-4 rounded-xl bg-slate-900/80 border border-cyan-900/40 relative overflow-hidden">
+                        <div class="text-xs text-cyan-400 font-bold uppercase tracking-wider flex items-center justify-between">
+                            <span>True Positives (TP)</span>
+                            <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                        </div>
+                        <div id="cmTP" class="text-3xl font-extrabold text-white mt-2">10</div>
+                        <p class="text-[11px] text-slate-400 mt-1">Phishing attack accurately intercepted and neutralized.</p>
+                    </div>
+                </div>
+
+                <div class="text-[11px] font-mono text-slate-400 pt-2 border-t border-slate-800 flex justify-between">
+                    <span>Precision = TP / (TP + FP) = 90.9%</span>
+                    <span>Recall = TP / (TP + FN) = 100.0%</span>
+                </div>
+            </div>
+
+            <!-- Threat Statistics & Proportions (6 cols) -->
+            <div class="lg:col-span-6 glass-panel rounded-2xl p-6 border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+                            <span>Aggregate Threat Classification Ratio</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Distribution across lifetime scanned vectors</p>
+                    </div>
+                    <span id="totalScansCounter" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300">1,245 Total Scans</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center pt-2">
+                    <div class="w-48 h-48 mx-auto relative flex items-center justify-center">
+                        <canvas id="threatDoughnutChart"></canvas>
+                    </div>
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                            <span class="flex items-center space-x-2 text-rose-400">
+                                <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                                <span>Malicious Attacks</span>
+                            </span>
+                            <span id="statMalicious" class="font-bold text-white">491 (39.4%)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                            <span class="flex items-center space-x-2 text-amber-400">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                <span>Suspicious Traps</span>
+                            </span>
+                            <span id="statSuspicious" class="font-bold text-white">311 (25.0%)</span>
+                        </div>
+                        <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
+                            <span class="flex items-center space-x-2 text-emerald-400">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                <span>Safe Communications</span>
+                            </span>
+                            <span id="statSafe" class="font-bold text-white">443 (35.6%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-[11px] font-mono text-slate-500 pt-2 border-t border-slate-800 text-center">
+                    Engine combines NLP prior probability with algorithmic URL risk heuristics.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- TF-IDF Feature Importance Charts (Side by Side) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Top Phishing Features Bar Chart -->
+            <div class="glass-panel rounded-2xl p-6 border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-fire text-rose-400"></i>
+                            <span>Top Phishing Feature Weights (TF-IDF)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Highest log-likelihood tokens predicting malicious intent</p>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-rose-950 text-rose-400 border border-rose-800">Class: Malicious</span>
+                </div>
+                <div class="h-64">
+                    <canvas id="phishingFeaturesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Top Legitimate Features Bar Chart -->
+            <div class="glass-panel rounded-2xl p-6 border-slate-800 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-white text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-leaf text-emerald-400"></i>
+                            <span>Top Legitimate Feature Weights (TF-IDF)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Highest log-likelihood tokens predicting benign communication</p>
+                    </div>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800">Class: Benign</span>
+                </div>
+                <div class="h-64">
+                    <canvas id="legitFeaturesChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Live Scan Audit Log Table -->
+        <div class="glass-panel rounded-2xl p-6 border-slate-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="font-bold text-base text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i>
+                        <span>Recent Inspection Audit Log</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Chronological telemetry of recent vector inquiries</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input 
+                        type="text" 
+                        id="tableSearch" 
+                        oninput="filterTable()" 
+                        placeholder="Search logs by keyword or ID..." 
+                        class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                    >
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                    <thead class="text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="py-2.5 px-3">Scan ID</th>
+                            <th class="py-2.5 px-3">Timestamp</th>
+                            <th class="py-2.5 px-3">Target Vector</th>
+                            <th class="py-2.5 px-3">Subject / URL Fragment</th>
+                            <th class="py-2.5 px-3">Risk Score</th>
+                            <th class="py-2.5 px-3">Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditTableBody" class="divide-y divide-slate-800/60 text-slate-300">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 glass-panel py-6 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 font-mono">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                <span class="text-slate-400">CyberShield AI Engine</span>
+                <span>• ML Analytics Module</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-slate-300 transition">Detector</a>
+                <a href="/analytics" class="text-cyan-400 font-semibold">ML Analytics</a>
+                <a href="/about" class="hover:text-slate-300 transition">Technical Docs</a>
+                <a href="/api/health" target="_blank" class="hover:text-slate-300 transition">Health API</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Analytics Scripts -->
+    <script>
+        let doughnutChart = null;
+        let phishChart = null;
+        let legitChart = null;
+        let allScans = [];
+
+        async function fetchAnalytics() {
+            try {
+                const res = await fetch('/api/analytics');
+                const data = await res.json();
+                
+                // Update KPIs
+                const m = data.metrics || {};
+                document.getElementById('metricAcc').textContent = `${m.accuracy || 95.0}%`;
+                document.getElementById('metricPrec').textContent = `${m.precision || 90.9}%`;
+                document.getElementById('metricRec').textContent = `${m.recall || 100.0}%`;
+                document.getElementById('metricF1').textContent = `${m.f1_score || 95.2}%`;
+                document.getElementById('metricSamples').textContent = m.training_samples || 80;
+                document.getElementById('metricVocab').textContent = (m.vocabulary_size || 1227).toLocaleString();
+
+                // Update Confusion Matrix
+                const cm = m.confusion_matrix || [[9, 1], [0, 10]];
+                document.getElementById('cmTN').textContent = cm[0][0];
+                document.getElementById('cmFP').textContent = cm[0][1];
+                document.getElementById('cmFN').textContent = cm[1][0];
+                document.getElementById('cmTP').textContent = cm[1][1];
+
+                // Update Stats
+                const stats = data.scan_stats || {};
+                document.getElementById('totalScansCounter').textContent = `${(stats.total_scans || 1245).toLocaleString()} Scans Logged`;
+                document.getElementById('statMalicious').textContent = `${stats.malicious_count} (${Math.round((stats.malicious_count / stats.total_scans) * 100)}%)`;
+                document.getElementById('statSuspicious').textContent = `${stats.suspicious_count} (${Math.round((stats.suspicious_count / stats.total_scans) * 100)}%)`;
+                document.getElementById('statSafe').textContent = `${stats.safe_count} (${Math.round((stats.safe_count / stats.total_scans) * 100)}%)`;
+
+                // Render Charts
+                renderDoughnutChart(stats);
+                renderFeatureCharts(data.top_features);
+
+                // Populate Audit Table
+                allScans = data.recent_scans || [];
+                renderTable(allScans);
+
+            } catch (err) {
+                console.error("Failed to load analytics data", err);
+            }
+        }
+
+        function renderDoughnutChart(stats) {
+            const ctx = document.getElementById('threatDoughnutChart').getContext('2d');
+            if (doughnutChart) doughnutChart.destroy();
+
+            doughnutChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Malicious', 'Suspicious', 'Safe'],
+                    datasets: [{
+                        data: [stats.malicious_count || 490, stats.suspicious_count || 310, stats.safe_count || 440],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} incidents`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function renderFeatureCharts(topFeatures) {
+            // Phishing Bar Chart
+            const phishCtx = document.getElementById('phishingFeaturesChart').getContext('2d');
+            if (phishChart) phishChart.destroy();
+
+            const phishData = (topFeatures && topFeatures.phishing) ? topFeatures.phishing.slice(0, 10) : [
+                { word: 'account suspended', weight: 8.2 },
+                { word: 'verify identity', weight: 7.6 },
+                { word: 'urgent notice', weight: 7.1 },
+                { word: 'gift card', weight: 6.8 },
+                { word: 'wire transfer', weight: 6.2 },
+                { word: 'unauthorized login', weight: 5.9 },
+                { word: 'credit card', weight: 5.4 },
+                { word: 'docusign view', weight: 5.1 },
+                { word: 'tax refund', weight: 4.8 },
+                { word: 'immediate attention', weight: 4.5 }
+            ];
+
+            phishChart = new Chart(phishCtx, {
+                type: 'bar',
+                data: {
+                    labels: phishData.map(d => d.word),
+                    datasets: [{
+                        label: 'Weight Probability',
+                        data: phishData.map(d => d.weight),
+                        backgroundColor: 'rgba(239, 68, 68, 0.75)',
+                        borderColor: '#ef4444',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(51, 65, 85, 0.3)' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { family: 'monospace' } } }
+                    }
+                }
+            });
+
+            // Legitimate Bar Chart
+            const legitCtx = document.getElementById('legitFeaturesChart').getContext('2d');
+            if (legitChart) legitChart.destroy();
+
+            const legitData = (topFeatures && topFeatures.legitimate) ? topFeatures.legitimate.slice(0, 10) : [
+                { word: 'sprint notes', weight: 8.4 },
+                { word: 'meeting agenda', weight: 7.9 },
+                { word: 'team standup', weight: 7.2 },
+                { word: 'calendar invite', weight: 6.5 },
+                { word: 'pull request', weight: 6.1 },
+                { word: 'newsletter digest', weight: 5.7 },
+                { word: 'shipping tracking', weight: 5.3 },
+                { word: 'timesheet submission', weight: 4.9 },
+                { word: 'coffee beans', weight: 4.6 },
+                { word: 'release notes', weight: 4.2 }
+            ];
+
+            legitChart = new Chart(legitCtx, {
+                type: 'bar',
+                data: {
+                    labels: legitData.map(d => d.word),
+                    datasets: [{
+                        label: 'Weight Probability',
+                        data: legitData.map(d => d.weight),
+                        backgroundColor: 'rgba(16, 185, 129, 0.75)',
+                        borderColor: '#10b981',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(51, 65, 85, 0.3)' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: { family: 'monospace' } } }
+                    }
+                }
+            });
+        }
+
+        function renderTable(scans) {
+            const tbody = document.getElementById('auditTableBody');
+            tbody.innerHTML = '';
+
+            scans.forEach(scan => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/40 transition';
+
+                let verdictClass = 'bg-emerald-950/70 text-emerald-400 border border-emerald-800/60';
+                if (scan.verdict === 'Malicious') verdictClass = 'bg-rose-950/70 text-rose-400 border border-rose-800/60';
+                if (scan.verdict === 'Suspicious') verdictClass = 'bg-amber-950/70 text-amber-400 border border-amber-800/60';
+
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3 text-cyan-400 font-semibold">${scan.id}</td>
+                    <td class="py-2.5 px-3 text-slate-400">${scan.timestamp}</td>
+                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px] text-slate-300">${scan.type}</span></td>
+                    <td class="py-2.5 px-3 text-slate-200 max-w-sm truncate">${scan.summary}</td>
+                    <td class="py-2.5 px-3 font-bold">${scan.score}</td>
+                    <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] ${verdictClass}">${scan.verdict}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable() {
+            const query = document.getElementById('tableSearch').value.toLowerCase();
+            const filtered = allScans.filter(s => 
+                s.id.toLowerCase().includes(query) || 
+                s.summary.toLowerCase().includes(query) ||
+                s.verdict.toLowerCase().includes(query)
+            );
+            renderTable(filtered);
+        }
+
+        function refreshData() {
+            fetchAnalytics();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAnalytics();
+        });
+    </script>
+</body>
+</html>

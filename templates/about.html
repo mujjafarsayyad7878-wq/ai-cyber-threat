@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Technical Architecture & Cybersecurity Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070b14',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            accent: '#06b6d4',
+                            safe: '#10b981',
+                            warning: '#f59e0b',
+                            danger: '#ef4444'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Menlo', 'Courier New', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        body {
+            background-color: #070b14;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .cyber-grid {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        @keyframes cyber-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .pulse-dot {
+            animation: cyber-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans antialiased cyber-grid flex flex-col min-h-screen">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition duration-300">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">CyberShield AI</span>
+                        <span class="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider bg-cyan-950 text-cyan-400 border border-cyan-800/50 rounded-full">v1.0 Pro</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 -mt-0.5">Threat & Phishing Detection Engine</p>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center space-x-1 font-medium text-sm">
+                <a href="/" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-radar text-xs"></i>
+                    <span>Live Detector</span>
+                </a>
+                <a href="/analytics" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                    <span>ML Analytics</span>
+                </a>
+                <a href="/about" class="px-3.5 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-book-skull text-xs"></i>
+                    <span>Technical Architecture</span>
+                </a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                    <span>SPECIFICATION RFC</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-10">
+
+        <!-- Page Header Banner -->
+        <div class="max-w-3xl">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 text-xs font-mono mb-3">
+                <i class="fa-solid fa-code-branch"></i>
+                <span>Deep Technical Architecture & Defense Blueprints</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                Engineering <span class="bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">Specifications & Heuristics</span>
+            </h1>
+            <p class="text-sm sm:text-base text-slate-400 mt-2">
+                Learn how CyberShield AI fuses probabilistic NLP classification, RFC 3986 URL parsing heuristics, and Security Operations Center (SOC) incident response protocols.
+            </p>
+        </div>
+
+        <!-- System Architecture Flowchart Card -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 border-slate-800 space-y-6">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                        <i class="fa-solid fa-diagram-project text-cyan-400"></i>
+                        <span>System Pipeline Architecture</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">End-to-end detection pipeline from raw inputs to composite risk scoring</p>
+                </div>
+                <span class="px-3 py-1 rounded-lg text-xs font-mono bg-slate-900 border border-slate-700 text-cyan-400">FastAPI Asynchronous Engine</span>
+            </div>
+
+            <!-- Visual Flowchart Representation -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs font-mono">
+                <!-- Step 1 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 relative">
+                    <div class="w-7 h-7 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold mb-3">1</div>
+                    <div class="font-bold text-white mb-1">Vector Ingestion</div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        FastAPI processes raw email body text and/or extracted URL string via REST payload validation.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 relative">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold mb-3">2</div>
+                    <div class="font-bold text-white mb-1">Dual-Engine Split</div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        • Text: Sublinear TF-IDF vectorization (1-2 ngrams)<br>
+                        • URL: urllib parsing, IP checking, TLD analysis
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 relative">
+                    <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold mb-3">3</div>
+                    <div class="font-bold text-white mb-1">Probability Scoring</div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Multinomial Naive Bayes computes text posterior probability. Rule engine tallies 10+ URL risk flags.
+                    </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-slate-800 relative">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold mb-3">4</div>
+                    <div class="font-bold text-white mb-1">Composite Verdict</div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Adaptive weighted risk score (0-100) mapped to Safe, Suspicious, or Malicious + Actionable SOC playbook.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 1: Machine Learning Algorithm Deep-Dive -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-7 glass-panel rounded-2xl p-6 sm:p-8 border-slate-800 space-y-4">
+                <div class="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Algorithmic Foundation</span>
+                </div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">
+                    Multinomial Naive Bayes & TF-IDF
+                </h2>
+                <p class="text-sm text-slate-300 leading-relaxed">
+                    Phishing attacks predominantly leverage high-entropy psychological triggers (urgency, panic, account restrictions, bait prizes). Multinomial Naive Bayes operates on the foundational principles of Bayes' Theorem to calculate the posterior probability of a message being malicious:
+                </p>
+
+                <!-- Math Formula Callout -->
+                <div class="p-4 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-center text-sm text-cyan-300">
+                    <div class="text-xs text-slate-500 mb-1">Bayes' Classification Theorem:</div>
+                    <div class="text-base sm:text-lg font-bold">
+                        P(Phishing | Words) = [ P(Words | Phishing) × P(Phishing) ] / P(Words)
+                    </div>
+                </div>
+
+                <div class="space-y-3 text-xs text-slate-300 leading-relaxed">
+                    <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                        <span class="font-bold text-white font-mono">1. Sublinear TF-IDF Vectorization:</span>
+                        <p class="mt-1 text-slate-400">
+                            We calculate <code class="text-cyan-400 font-mono">1 + log(tf)</code> multiplied by Inverse Document Frequency (IDF) to prevent very frequent words from skewing the model while capturing unigram and bigram token pairings (such as <em>"account suspended"</em>, <em>"verify identity"</em>).
+                        </p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                        <span class="font-bold text-white font-mono">2. Laplace Smoothing (&alpha; = 0.1):</span>
+                        <p class="mt-1 text-slate-400">
+                            Additive Laplace smoothing ensures that novel tokens never receive zero probability in the multinomial likelihood distribution, preventing false negative blind spots.
+                        </p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
+                        <span class="font-bold text-white font-mono">3. Stratified Evaluation:</span>
+                        <p class="mt-1 text-slate-400">
+                            Trained and evaluated on balanced corpora with zero-tolerance false negative optimization to prioritize user credential safety above all else.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5 glass-panel rounded-2xl p-6 sm:p-8 border-slate-800 space-y-4">
+                <div class="flex items-center space-x-2 text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>NLP Feature Extraction</span>
+                </div>
+                <h3 class="text-lg font-bold text-white">Why Naive Bayes for Cybersecurity?</h3>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    While deep neural networks require gigabytes of VRAM and high inference latency, Naive Bayes provides:
+                </p>
+                <ul class="space-y-2.5 text-xs text-slate-300">
+                    <li class="flex items-start space-x-2">
+                        <i class="fa-solid fa-bolt text-amber-400 mt-0.5"></i>
+                        <span><strong>Sub-Millisecond Inference:</strong> Processes thousands of incoming emails per second with minimal CPU and memory footprints.</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <i class="fa-solid fa-eye text-cyan-400 mt-0.5"></i>
+                        <span><strong>100% Explainability:</strong> Log-probabilities can be decomposed directly to show security analysts exactly which token triggered the threat alert.</span>
+                    </li>
+                    <li class="flex items-start space-x-2">
+                        <i class="fa-solid fa-microchip text-emerald-400 mt-0.5"></i>
+                        <span><strong>Zero GPU Dependency:</strong> Easily deploys on Render's free tier without expensive hardware acceleration.</span>
+                    </li>
+                </ul>
+
+                <div class="mt-4 p-3.5 rounded-xl bg-indigo-950/30 border border-indigo-800/40 text-xs text-indigo-200">
+                    <i class="fa-solid fa-circle-info mr-1 text-indigo-400"></i>
+                    <span>Production models in CyberShield AI feature dynamic token weight ratios to minimize corporate false positives.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: URL Threat Heuristics -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 border-slate-800 space-y-6">
+            <div>
+                <div class="flex items-center space-x-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-shield-virus"></i>
+                    <span>URL Analysis Heuristics</span>
+                </div>
+                <h2 class="text-2xl font-bold text-white tracking-tight mt-1">
+                    RFC 3986 Heuristic Detection Vectors
+                </h2>
+                <p class="text-sm text-slate-300 mt-1">
+                    Attackers exploit human perception and protocol nuances to disguise attack links. CyberShield inspects ten distinct structural threat patterns:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <!-- Heuristic 1 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-network-wired text-rose-400"></i>
+                            <span>Naked IP Hostnames</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-950 text-rose-400 border border-rose-800">+40 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        URLs utilizing raw IPv4 or IPv6 addresses (e.g., <code class="text-slate-200 font-mono">http://185.220.101.5</code>) bypass legitimate DNS registration records and domain reputation filters.
+                    </p>
+                </div>
+
+                <!-- Heuristic 2 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-masks-theater text-rose-400"></i>
+                            <span>Brand Impersonation</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-950 text-rose-400 border border-rose-800">+45 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Attackers insert trademarks like PayPal, Microsoft, or Apple into third-party apex domains (e.g. <code class="text-slate-200 font-mono">paypal-security-update.com</code>).
+                    </p>
+                </div>
+
+                <!-- Heuristic 3 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-link-slash text-amber-400"></i>
+                            <span>URL Shortener Masking</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-950 text-amber-400 border border-amber-800">+25 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Redirect services (bit.ly, tinyurl, t.co) conceal the true destination server from gateway scanners and human visual inspection.
+                    </p>
+                </div>
+
+                <!-- Heuristic 4 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-globe text-amber-400"></i>
+                            <span>Abused TLD Profiling</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-950 text-amber-400 border border-amber-800">+30 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Disposable, free, or low-cost TLDs (<code class="text-slate-200 font-mono">.xyz, .top, .tk, .buzz, .club</code>) exhibit disproportionately high malware hosting density.
+                    </p>
+                </div>
+
+                <!-- Heuristic 5 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-lock-open text-amber-400"></i>
+                            <span>Insecure Protocol (HTTP)</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-950 text-amber-400 border border-amber-800">+20 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        Authentication and account verification portals hosted over unencrypted HTTP expose credentials to man-in-the-middle sniffing.
+                    </p>
+                </div>
+
+                <!-- Heuristic 6 -->
+                <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 space-y-2">
+                    <div class="flex items-center justify-between font-mono">
+                        <span class="font-bold text-white flex items-center space-x-1.5">
+                            <i class="fa-solid fa-at text-rose-400"></i>
+                            <span>Userinfo @ Obfuscation</span>
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-950 text-rose-400 border border-rose-800">+35 Risk</span>
+                    </div>
+                    <p class="text-slate-400 text-[11px] leading-relaxed">
+                        The RFC userinfo delimiter (<code class="text-slate-200 font-mono">https://legit.com@evil.com</code>) tricks victims into reading the prefix while the browser navigates to the host after the @.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Cybersecurity Incident Response & SOP -->
+        <div class="glass-panel rounded-2xl p-6 sm:p-8 border-slate-800 space-y-6">
+            <div>
+                <div class="flex items-center space-x-2 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <span>Cybersecurity Defense SOP</span>
+                </div>
+                <h2 class="text-2xl font-bold text-white tracking-tight mt-1">
+                    SOC Playbook: Incident Mitigation Workflow
+                </h2>
+                <p class="text-sm text-slate-300 mt-1">
+                    Standard Operating Procedures (SOP) when a high-risk or malicious threat vector is confirmed:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
+                <!-- Phase 1 -->
+                <div class="p-5 rounded-2xl bg-slate-900/70 border border-rose-900/40 space-y-3">
+                    <div class="flex items-center space-x-2 text-rose-400 font-mono font-bold">
+                        <span class="w-6 h-6 rounded-lg bg-rose-950 flex items-center justify-center border border-rose-800">1</span>
+                        <span>Phase 1: Containment</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 leading-relaxed">
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-ban text-rose-400 mt-0.5"></i>
+                            <span>Isolate endpoint from local network if links were clicked or files downloaded.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-key text-rose-400 mt-0.5"></i>
+                            <span>Revoke all active sessions and rotate enterprise passwords if credentials were entered.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="p-5 rounded-2xl bg-slate-900/70 border border-amber-900/40 space-y-3">
+                    <div class="flex items-center space-x-2 text-amber-400 font-mono font-bold">
+                        <span class="w-6 h-6 rounded-lg bg-amber-950 flex items-center justify-center border border-amber-800">2</span>
+                        <span>Phase 2: Technical Triage</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 leading-relaxed">
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-file-code text-amber-400 mt-0.5"></i>
+                            <span>Export raw RFC 822 email headers (.eml) to inspect originating IP and Return-Path.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-filter text-amber-400 mt-0.5"></i>
+                            <span>Verify SPF, DKIM signature validity, and DMARC alignment status.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="p-5 rounded-2xl bg-slate-900/70 border border-emerald-900/40 space-y-3">
+                    <div class="flex items-center space-x-2 text-emerald-400 font-mono font-bold">
+                        <span class="w-6 h-6 rounded-lg bg-emerald-950 flex items-center justify-center border border-emerald-800">3</span>
+                        <span>Phase 3: Hardening</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 leading-relaxed">
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-shield-halved text-emerald-400 mt-0.5"></i>
+                            <span>Blacklist malicious FQDN and IP address on perimeter firewalls and secure web gateways.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <i class="fa-solid fa-envelope-shield text-emerald-400 mt-0.5"></i>
+                            <span>Submit URL to Google Safe Browsing and PhishTank community feeds to protect other users.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 glass-panel py-6 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 font-mono">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                <span class="text-slate-400">CyberShield AI Engine</span>
+                <span>• Technical Specifications</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-slate-300 transition">Detector</a>
+                <a href="/analytics" class="hover:text-slate-300 transition">ML Analytics</a>
+                <a href="/about" class="text-cyan-400 font-semibold">Technical Docs</a>
+                <a href="/api/health" target="_blank" class="hover:text-slate-300 transition">Health API</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

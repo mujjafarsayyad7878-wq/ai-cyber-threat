@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield AI - Live Threat & Phishing Detection Engine</title>
+    <!-- Tailwind CSS CDN with plugins -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            dark: '#070b14',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            accent: '#06b6d4',
+                            safe: '#10b981',
+                            warning: '#f59e0b',
+                            danger: '#ef4444'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Menlo', 'Courier New', 'monospace'],
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        
+        body {
+            background-color: #070b14;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+
+        .glass-panel-glow {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.15);
+        }
+
+        .cyber-grid {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+
+        /* Pulse glow animation for status pills */
+        @keyframes cyber-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .pulse-dot {
+            animation: cyber-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="text-slate-100 font-sans antialiased cyber-grid flex flex-col min-h-screen">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="/" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 group-hover:shadow-cyan-500/40 transition duration-300">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-300 bg-clip-text text-transparent">CyberShield AI</span>
+                        <span class="px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider bg-cyan-950 text-cyan-400 border border-cyan-800/50 rounded-full">v1.0 Pro</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 -mt-0.5">Threat & Phishing Detection Engine</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 font-medium text-sm">
+                <a href="/" class="px-3.5 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-semibold flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-radar text-xs"></i>
+                    <span>Live Detector</span>
+                </a>
+                <a href="/analytics" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-line text-xs"></i>
+                    <span>ML Analytics</span>
+                </a>
+                <a href="/about" class="px-3.5 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/60 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-book-skull text-xs"></i>
+                    <span>Technical Architecture</span>
+                </a>
+            </nav>
+
+            <!-- Status & Health Pill -->
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+                    <span>ENGINE ONLINE</span>
+                </div>
+                <a href="https://github.com" target="_blank" class="text-slate-400 hover:text-white text-lg p-1.5 transition">
+                    <i class="fa-brands fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- Hero Title Banner -->
+        <div class="text-center max-w-3xl mx-auto mb-8">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/60 text-cyan-300 text-xs font-mono mb-3">
+                <i class="fa-solid fa-microchip"></i>
+                <span>Hybrid Naive Bayes ML + Algorithmic URL Threat Engine</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white">
+                Inspect Threats. <span class="bg-gradient-to-r from-cyan-400 via-sky-300 to-indigo-400 bg-clip-text text-transparent">Neutralize Attacks.</span>
+            </h1>
+            <p class="mt-2 text-sm sm:text-base text-slate-400">
+                Analyze suspicious emails, SMS messages, brand typosquatting, and malicious URLs in real time with probabilistic NLP and deep heuristic inspection.
+            </p>
+        </div>
+
+        <!-- Quick Test Sample Bar -->
+        <div class="glass-panel rounded-2xl p-4 mb-8 border-slate-800">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-2 text-xs font-mono text-slate-300">
+                    <i class="fa-solid fa-bolt text-amber-400"></i>
+                    <span class="font-semibold text-slate-200">Quick Test Samples:</span>
+                    <span class="text-slate-500 hidden md:inline">Click to load and auto-analyze:</span>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="loadSample('phishing_email')" class="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-rose-950/50 hover:bg-rose-900/60 border border-rose-800/50 text-rose-300 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+                        <span>Phishing Email</span>
+                    </button>
+                    <button onclick="loadSample('spoofed_ip_url')" class="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-red-950/50 hover:bg-red-900/60 border border-red-800/50 text-red-300 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-network-wired text-red-400"></i>
+                        <span>Naked IP Harvester</span>
+                    </button>
+                    <button onclick="loadSample('shortened_url_bait')" class="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-amber-950/50 hover:bg-amber-900/60 border border-amber-800/50 text-amber-300 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-link text-amber-400"></i>
+                        <span>Shortened URL Bait</span>
+                    </button>
+                    <button onclick="loadSample('safe_corporate_message')" class="px-2.5 py-1.5 rounded-lg text-xs font-mono bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-800/50 text-emerald-300 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-shield-check text-emerald-400"></i>
+                        <span>Safe Work Email</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analyzer & Results Split Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: Input Form (5 cols on lg) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="glass-panel glass-panel-glow rounded-2xl p-6 relative overflow-hidden">
+                    <div class="absolute -top-24 -right-24 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-magnifying-glass-chart text-cyan-400"></i>
+                            <span>Inspection Terminal</span>
+                        </h2>
+                        <button onclick="clearInputs()" class="text-xs font-mono text-slate-400 hover:text-white transition flex items-center space-x-1">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+
+                    <form id="threatForm" onsubmit="handleAnalyze(event)" class="space-y-4">
+                        <!-- URL Input Field -->
+                        <div>
+                            <label for="urlInput" class="block text-xs font-mono text-slate-300 mb-1.5 flex items-center justify-between">
+                                <span class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-globe text-cyan-400"></i>
+                                    <span>Target URL (Optional or Standalone):</span>
+                                </span>
+                                <span class="text-[11px] text-slate-500">Heuristic Engine</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-link text-xs"></i>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="urlInput" 
+                                    placeholder="e.g. http://paypal-security-update.com/login or naked IP" 
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-950/70 border border-slate-700/80 text-white placeholder-slate-500 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Email/Message Body Input Field -->
+                        <div>
+                            <label for="textInput" class="block text-xs font-mono text-slate-300 mb-1.5 flex items-center justify-between">
+                                <span class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-envelope-open-text text-indigo-400"></i>
+                                    <span>Email / Message Content:</span>
+                                </span>
+                                <span class="text-[11px] text-slate-500">TF-IDF Naive Bayes</span>
+                            </label>
+                            <textarea 
+                                id="textInput" 
+                                rows="6" 
+                                placeholder="Paste the suspicious email, SMS alert, direct deposit request, or workplace communication message here..." 
+                                class="w-full p-3 rounded-xl bg-slate-950/70 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition leading-relaxed"
+                            ></textarea>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button 
+                            type="submit" 
+                            id="submitBtn"
+                            class="w-full py-3 px-4 rounded-xl font-bold text-sm tracking-wide text-white bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 active:scale-[0.99] shadow-lg shadow-cyan-500/25 transition duration-200 flex items-center justify-center space-x-2"
+                        >
+                            <i class="fa-solid fa-fingerprint text-base"></i>
+                            <span id="btnText">Analyze Threat Vector</span>
+                            <div id="btnSpinner" class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        </button>
+                    </form>
+
+                    <!-- Features Quick Overview -->
+                    <div class="mt-6 pt-5 border-t border-slate-800/80 grid grid-cols-2 gap-3 text-xs text-slate-400">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-cyan-400"></i>
+                            <span>Brand Impersonation Check</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-cyan-400"></i>
+                            <span>Naked IP Host Detection</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-cyan-400"></i>
+                            <span>Shortened Link Resolution</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check text-cyan-400"></i>
+                            <span>Urgency Pressure Scoring</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Level Legend -->
+                <div class="glass-panel rounded-2xl p-4 text-xs">
+                    <div class="font-mono text-slate-300 font-semibold mb-2">Verdict Risk Thresholds</div>
+                    <div class="grid grid-cols-3 gap-2 text-center font-mono">
+                        <div class="p-2 rounded-lg bg-emerald-950/40 border border-emerald-800/40 text-emerald-400">
+                            <div class="font-bold">0 - 35</div>
+                            <div class="text-[10px] text-emerald-300/80 uppercase">Safe (Low)</div>
+                        </div>
+                        <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-800/40 text-amber-400">
+                            <div class="font-bold">36 - 70</div>
+                            <div class="text-[10px] text-amber-300/80 uppercase">Suspicious</div>
+                        </div>
+                        <div class="p-2 rounded-lg bg-rose-950/40 border border-rose-800/40 text-rose-400">
+                            <div class="font-bold">71 - 100</div>
+                            <div class="text-[10px] text-rose-300/80 uppercase">Malicious</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Output Dashboard & Gauge (7 cols on lg) -->
+            <div class="lg:col-span-7 space-y-6">
+
+                <!-- Placeholder state before scan -->
+                <div id="initialState" class="glass-panel rounded-2xl p-12 text-center border-dashed border-slate-700/80">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-cyan-950/60 border border-cyan-800/40 flex items-center justify-center text-cyan-400 text-2xl mb-4">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Ready for Inspection</h3>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">
+                        Enter an email body or suspicious URL, or click any of the quick-test presets above to run the hybrid detection engine.
+                    </p>
+                    <button onclick="loadSample('phishing_email')" class="inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-mono font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 transition">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Try Sample: PayPal Account Suspended</span>
+                    </button>
+                </div>
+
+                <!-- RESULTS CONTAINER (Hidden by default) -->
+                <div id="resultsContainer" class="hidden space-y-6">
+                    
+                    <!-- Verdict & Risk Gauge Card -->
+                    <div id="verdictCard" class="glass-panel rounded-2xl p-6 transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                            
+                            <!-- Gauge Canvas (5 cols) -->
+                            <div class="md:col-span-5 flex flex-col items-center justify-center relative">
+                                <div class="w-52 h-32 relative flex items-end justify-center">
+                                    <canvas id="riskGaugeCanvas"></canvas>
+                                    <div class="absolute bottom-0 flex flex-col items-center">
+                                        <span id="gaugeScoreNumber" class="text-4xl font-extrabold font-mono text-white tracking-tight">0</span>
+                                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Risk Score / 100</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between w-48 text-[10px] font-mono text-slate-400 mt-2 px-1">
+                                    <span class="text-emerald-400">0 Safe</span>
+                                    <span class="text-amber-400">50</span>
+                                    <span class="text-rose-400">100 Threat</span>
+                                </div>
+                            </div>
+
+                            <!-- Verdict Text & Breakdown (7 cols) -->
+                            <div class="md:col-span-7 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Threat Assessment:</span>
+                                    <span id="scanTimestamp" class="text-[11px] font-mono text-slate-500">2026-11-01 12:00</span>
+                                </div>
+
+                                <div class="flex items-center space-x-3">
+                                    <span id="verdictBadge" class="px-3.5 py-1.5 rounded-xl font-bold font-mono text-sm tracking-wide uppercase border flex items-center space-x-2">
+                                        <i id="verdictIcon" class="fa-solid fa-triangle-exclamation"></i>
+                                        <span id="verdictText">MALICIOUS</span>
+                                    </span>
+                                    <span id="threatLevelText" class="text-xs font-mono text-slate-300">Critical Cyber Threat</span>
+                                </div>
+
+                                <p id="verdictSummary" class="text-xs text-slate-300 leading-relaxed">
+                                    Confidence score and multi-layer indicators detected. Immediate containment actions are recommended.
+                                </p>
+
+                                <!-- Mini Progress metrics -->
+                                <div class="space-y-1.5 pt-2">
+                                    <div class="flex justify-between text-[11px] font-mono">
+                                        <span class="text-slate-400">ML Text Phishing Probability:</span>
+                                        <span id="mlProbText" class="text-cyan-400 font-bold">0%</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div id="mlProbBar" class="h-full bg-cyan-400 transition-all duration-700" style="width: 0%"></div>
+                                    </div>
+
+                                    <div class="flex justify-between text-[11px] font-mono pt-1">
+                                        <span class="text-slate-400">URL Threat Heuristics:</span>
+                                        <span id="urlProbText" class="text-amber-400 font-bold">0%</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                        <div id="urlProbBar" class="h-full bg-amber-400 transition-all duration-700" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Red-Flag Badges & Matched Keywords -->
+                    <div id="redFlagsCard" class="glass-panel rounded-2xl p-5">
+                        <h4 class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center justify-between">
+                            <span class="flex items-center space-x-2">
+                                <i class="fa-solid fa-flag text-rose-400"></i>
+                                <span>Detected Psychological & Urgency Red-Flags:</span>
+                            </span>
+                            <span id="redFlagsCount" class="px-2 py-0.5 rounded-full text-[10px] bg-rose-950 text-rose-300 border border-rose-800 font-mono">0 Flags</span>
+                        </h4>
+                        <div id="redFlagsBadges" class="flex flex-wrap gap-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- URL Breakdown Cards -->
+                    <div id="urlAnalysisCard" class="glass-panel rounded-2xl p-5">
+                        <h4 class="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center justify-between">
+                            <span class="flex items-center space-x-2">
+                                <i class="fa-solid fa-globe text-cyan-400"></i>
+                                <span>URL Vector Heuristic Inspection:</span>
+                            </span>
+                            <span id="urlTargetDisplay" class="text-[11px] text-slate-400 font-mono truncate max-w-xs"></span>
+                        </h4>
+
+                        <!-- Heuristic Checklist Grid -->
+                        <div id="urlChecksGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs mb-4">
+                            <!-- Injected dynamically -->
+                        </div>
+
+                        <!-- Specific detailed URL flags -->
+                        <div id="urlFlagsList" class="space-y-2">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Mitigation Recommendations -->
+                    <div class="glass-panel rounded-2xl p-5 border-l-4 border-l-cyan-500">
+                        <h4 class="text-xs font-mono font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center space-x-2">
+                            <i class="fa-solid fa-shield-virus text-cyan-400"></i>
+                            <span>Recommended Security Countermeasures (SOP):</span>
+                        </h4>
+                        <div id="recommendationsList" class="space-y-2.5">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Recent Threat Scans Stream -->
+        <div class="mt-12 glass-panel rounded-2xl p-6 border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-stream text-cyan-400"></i>
+                    <h3 class="font-bold text-base text-white">Live Threat Intelligence Stream</h3>
+                </div>
+                <a href="/analytics" class="text-xs font-mono text-cyan-400 hover:text-cyan-300 transition flex items-center space-x-1">
+                    <span>View Full Analytics</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs font-mono">
+                    <thead class="text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="py-2.5 px-3">Scan ID</th>
+                            <th class="py-2.5 px-3">Timestamp</th>
+                            <th class="py-2.5 px-3">Vector</th>
+                            <th class="py-2.5 px-3">Subject / Target Preview</th>
+                            <th class="py-2.5 px-3">Risk Score</th>
+                            <th class="py-2.5 px-3">Verdict</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentScansTbody" class="divide-y divide-slate-800/60 text-slate-300">
+                        <!-- Populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800/80 glass-panel py-6 text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 font-mono">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i>
+                <span class="text-slate-400">CyberShield AI Engine</span>
+                <span>• FastAPI & Scikit-Learn</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/" class="hover:text-slate-300 transition">Detector</a>
+                <a href="/analytics" class="hover:text-slate-300 transition">ML Analytics</a>
+                <a href="/about" class="hover:text-slate-300 transition">Technical Docs</a>
+                <a href="/api/health" target="_blank" class="hover:text-slate-300 transition">Health API</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let gaugeChart = null;
+
+        // Initialize or update the Chart.js Gauge
+        function initRiskGauge(score, colorHex) {
+            const ctx = document.getElementById('riskGaugeCanvas').getContext('2d');
+            
+            const remaining = Math.max(0, 100 - score);
+
+            if (gaugeChart) {
+                gaugeChart.destroy();
+            }
+
+            gaugeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, remaining],
+                        backgroundColor: [
+                            colorHex,
+                            'rgba(30, 41, 59, 0.6)'
+                        ],
+                        borderWidth: 0,
+                        circumference: 180,
+                        rotation: 270,
+                        cutout: '80%',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        animateRotate: true,
+                        duration: 800
+                    },
+                    plugins: {
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+
+        // Fetch recent scans and populate the table
+        async function loadRecentScans() {
+            try {
+                const res = await fetch('/api/analytics');
+                const data = await res.json();
+                const tbody = document.getElementById('recentScansTbody');
+                tbody.innerHTML = '';
+
+                data.recent_scans.forEach(scan => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-slate-800/40 transition';
+
+                    let verdictBadgeClass = 'bg-emerald-950/70 text-emerald-400 border border-emerald-800/60';
+                    if (scan.verdict === 'Malicious') {
+                        verdictBadgeClass = 'bg-rose-950/70 text-rose-400 border border-rose-800/60';
+                    } else if (scan.verdict === 'Suspicious') {
+                        verdictBadgeClass = 'bg-amber-950/70 text-amber-400 border border-amber-800/60';
+                    }
+
+                    row.innerHTML = `
+                        <td class="py-2.5 px-3 text-cyan-400 font-semibold">${scan.id}</td>
+                        <td class="py-2.5 px-3 text-slate-400">${scan.timestamp}</td>
+                        <td class="py-2.5 px-3 text-slate-300"><span class="px-2 py-0.5 rounded bg-slate-800 text-[10px]">${scan.type}</span></td>
+                        <td class="py-2.5 px-3 text-slate-200 max-w-xs truncate">${scan.summary}</td>
+                        <td class="py-2.5 px-3 font-bold">${scan.score}</td>
+                        <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] ${verdictBadgeClass}">${scan.verdict}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (err) {
+                console.error("Failed to load recent scans", err);
+            }
+        }
+
+        // Load Preset Quick-Test Samples
+        async function loadSample(sampleKey) {
+            try {
+                const res = await fetch('/api/sample-data');
+                const samples = await res.json();
+                const s = samples[sampleKey];
+                if (!s) return;
+
+                document.getElementById('textInput').value = s.text || '';
+                document.getElementById('urlInput').value = s.url || '';
+
+                // Trigger analysis
+                triggerAnalysis(s.text, s.url);
+            } catch (err) {
+                console.error("Error loading sample", err);
+            }
+        }
+
+        function clearInputs() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('resultsContainer').classList.add('hidden');
+            document.getElementById('initialState').classList.remove('hidden');
+        }
+
+        // Form Submission
+        async function handleAnalyze(e) {
+            e.preventDefault();
+            const text = document.getElementById('textInput').value.trim();
+            const url = document.getElementById('urlInput').value.trim();
+
+            if (!text && !url) {
+                alert("Please provide email/message text or a URL to inspect.");
+                return;
+            }
+
+            await triggerAnalysis(text, url);
+        }
+
+        async function triggerAnalysis(text, url) {
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const btnSpinner = document.getElementById('btnSpinner');
+
+            // UI loading state
+            btn.disabled = true;
+            btnText.textContent = "Inspecting Threat Vectors...";
+            btnSpinner.classList.remove('hidden');
+
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, url })
+                });
+
+                const data = await res.json();
+                renderResults(data);
+                loadRecentScans();
+            } catch (err) {
+                alert("Analysis failed: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = "Analyze Threat Vector";
+                btnSpinner.classList.add('hidden');
+            }
+        }
+
+        function renderResults(data) {
+            document.getElementById('initialState').classList.add('hidden');
+            const container = document.getElementById('resultsContainer');
+            container.classList.remove('hidden');
+
+            const score = data.overall_score;
+            document.getElementById('gaugeScoreNumber').textContent = score;
+            document.getElementById('scanTimestamp').textContent = new Date(data.timestamp).toLocaleString();
+
+            let colorHex = '#10b981'; // Green
+            let badgeClass = 'bg-emerald-950/80 text-emerald-400 border-emerald-700/60 shadow-lg shadow-emerald-950/50';
+            let iconClass = 'fa-solid fa-shield-check';
+
+            if (data.verdict === 'Malicious') {
+                colorHex = '#ef4444'; // Red
+                badgeClass = 'bg-rose-950/90 text-rose-300 border-rose-700/80 shadow-lg shadow-rose-950/50';
+                iconClass = 'fa-solid fa-triangle-exclamation';
+            } else if (data.verdict === 'Suspicious') {
+                colorHex = '#f59e0b'; // Amber
+                badgeClass = 'bg-amber-950/80 text-amber-300 border-amber-700/80 shadow-lg shadow-amber-950/50';
+                iconClass = 'fa-solid fa-circle-exclamation';
+            }
+
+            // Update Verdict Badge & Texts
+            const badge = document.getElementById('verdictBadge');
+            badge.className = `px-3.5 py-1.5 rounded-xl font-bold font-mono text-sm tracking-wide uppercase border flex items-center space-x-2 ${badgeClass}`;
+            document.getElementById('verdictIcon').className = iconClass;
+            document.getElementById('verdictText').textContent = data.verdict;
+            document.getElementById('threatLevelText').textContent = data.threat_level;
+
+            // Summary description
+            const summary = document.getElementById('verdictSummary');
+            if (data.verdict === 'Malicious') {
+                summary.textContent = `High-probability attack vector detected (Risk Score ${score}/100). Do not interact with links or submit sensitive information.`;
+            } else if (data.verdict === 'Suspicious') {
+                summary.textContent = `Multiple anomalous flags identified (Risk Score ${score}/100). Caution is strongly advised pending sender authentication.`;
+            } else {
+                summary.textContent = `No critical phishing patterns or malicious URL indicators detected (Risk Score ${score}/100). Normal baseline hygiene applies.`;
+            }
+
+            // Update Progress bars
+            const mlProb = data.text_analysis.ml_probability || 0;
+            document.getElementById('mlProbText').textContent = `${mlProb}%`;
+            document.getElementById('mlProbBar').style.width = `${mlProb}%`;
+
+            const urlScore = data.url_analysis.risk_score || 0;
+            document.getElementById('urlProbText').textContent = `${urlScore}%`;
+            document.getElementById('urlProbBar').style.width = `${urlScore}%`;
+
+            // Draw Gauge
+            initRiskGauge(score, colorHex);
+
+            // Render Red-Flag Badges
+            renderRedFlags(data.text_analysis);
+
+            // Render URL Breakdown
+            renderUrlAnalysis(data.url_analysis);
+
+            // Render Recommendations
+            renderRecommendations(data.recommendations);
+        }
+
+        function renderRedFlags(textAnalysis) {
+            const countEl = document.getElementById('redFlagsCount');
+            const badgesContainer = document.getElementById('redFlagsBadges');
+            badgesContainer.innerHTML = '';
+
+            const redFlags = textAnalysis.red_flags || [];
+            const tokens = textAnalysis.matched_tokens || [];
+
+            countEl.textContent = `${redFlags.length} Triggers Found`;
+
+            if (redFlags.length === 0 && tokens.length === 0) {
+                badgesContainer.innerHTML = `
+                    <div class="text-xs text-slate-400 font-mono italic">
+                        No critical psychological coercion or credential-harvesting keywords identified in input text.
+                    </div>
+                `;
+                return;
+            }
+
+            redFlags.forEach(rf => {
+                const badge = document.createElement('span');
+                badge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono bg-rose-950/60 border border-rose-800/60 text-rose-300 flex items-center space-x-1.5';
+                badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-400 text-[10px]"></i><span>${rf.label}</span> <span class="bg-rose-900/80 px-1.5 py-0.2 rounded text-[10px] text-white">×${rf.occurrences}</span>`;
+                badgesContainer.appendChild(badge);
+            });
+
+            tokens.forEach(tok => {
+                const badge = document.createElement('span');
+                badge.className = 'px-2.5 py-1 rounded-lg text-xs font-mono bg-indigo-950/50 border border-indigo-800/50 text-indigo-300 flex items-center space-x-1.5';
+                badge.innerHTML = `<i class="fa-solid fa-tag text-indigo-400 text-[10px]"></i><span>TF-IDF Token: ${tok}</span>`;
+                badgesContainer.appendChild(badge);
+            });
+        }
+
+        function renderUrlAnalysis(urlData) {
+            const urlCard = document.getElementById('urlAnalysisCard');
+            const urlDisplay = document.getElementById('urlTargetDisplay');
+            const checksGrid = document.getElementById('urlChecksGrid');
+            const flagsList = document.getElementById('urlFlagsList');
+
+            checksGrid.innerHTML = '';
+            flagsList.innerHTML = '';
+
+            if (!urlData.has_url) {
+                urlDisplay.textContent = 'None analyzed';
+                checksGrid.innerHTML = `
+                    <div class="col-span-2 text-xs text-slate-400 font-mono italic">
+                        No URL submitted in this inspection batch.
+                    </div>
+                `;
+                return;
+            }
+
+            urlDisplay.textContent = urlData.url;
+
+            // Build Heuristics Checklist Cards
+            const checks = [
+                {
+                    label: 'Bare IP Hostname',
+                    passed: !urlData.is_ip,
+                    detail: urlData.is_ip ? `Naked IP (${urlData.hostname})` : 'Clean FQDN Host'
+                },
+                {
+                    label: 'Brand Spoofing',
+                    passed: !urlData.brand_spoofed,
+                    detail: urlData.brand_spoofed ? `Impersonates '${urlData.spoofed_brand}'` : 'No trademark spoofing'
+                },
+                {
+                    label: 'URL Shortener',
+                    passed: !urlData.is_shortener,
+                    detail: urlData.is_shortener ? 'Masked Link Shortener' : 'Direct Hostname'
+                },
+                {
+                    label: 'SSL / TLS Protocol',
+                    passed: urlData.is_https,
+                    detail: urlData.is_https ? 'HTTPS Encrypted' : 'Insecure HTTP Protocol'
+                },
+                {
+                    label: 'TLD Reputation',
+                    passed: !urlData.has_suspicious_tld,
+                    detail: urlData.has_suspicious_tld ? `Suspicious TLD (.${urlData.tld})` : `Standard TLD (.${urlData.tld})`
+                },
+                {
+                    label: 'Subdomain Hierarchy',
+                    passed: !urlData.excessive_subdomains,
+                    detail: urlData.excessive_subdomains ? 'Deep Subdomains (>3)' : 'Normal Subdomain Depth'
+                }
+            ];
+
+            checks.forEach(c => {
+                const card = document.createElement('div');
+                card.className = `p-2.5 rounded-xl border flex items-center justify-between font-mono ${
+                    c.passed 
+                    ? 'bg-slate-900/60 border-slate-800 text-slate-300' 
+                    : 'bg-rose-950/30 border-rose-800/50 text-rose-300'
+                }`;
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid ${c.passed ? 'fa-check text-emerald-400' : 'fa-xmark text-rose-400'}"></i>
+                        <span>${c.label}</span>
+                    </div>
+                    <span class="text-[10px] ${c.passed ? 'text-slate-400' : 'text-rose-400 font-bold'}">${c.detail}</span>
+                `;
+                checksGrid.appendChild(card);
+            });
+
+            // Specific Flags List
+            if (urlData.flags && urlData.flags.length > 0) {
+                urlData.flags.forEach(f => {
+                    const flagItem = document.createElement('div');
+                    let badgeColor = 'bg-rose-950 text-rose-400 border-rose-800';
+                    if (f.severity === 'MEDIUM') badgeColor = 'bg-amber-950 text-amber-400 border-amber-800';
+                    if (f.severity === 'LOW') badgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
+
+                    flagItem.className = 'p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-xs flex items-start space-x-2.5';
+                    flagItem.innerHTML = `
+                        <span class="px-2 py-0.5 rounded text-[10px] font-mono border font-bold uppercase ${badgeColor}">${f.severity}</span>
+                        <div class="text-slate-300 leading-snug">
+                            <span class="font-mono font-semibold text-slate-200">${f.type}:</span> ${f.message}
+                        </div>
+                    `;
+                    flagsList.appendChild(flagItem);
+                });
+            }
+        }
+
+        function renderRecommendations(recs) {
+            const list = document.getElementById('recommendationsList');
+            list.innerHTML = '';
+
+            recs.forEach(r => {
+                const item = document.createElement('div');
+                let prioBadge = 'bg-rose-950/80 text-rose-300 border-rose-800';
+                if (r.priority === 'MEDIUM') prioBadge = 'bg-amber-950/80 text-amber-300 border-amber-800';
+                if (r.priority === 'LOW') prioBadge = 'bg-cyan-950/80 text-cyan-300 border-cyan-800';
+
+                item.className = 'p-3 rounded-xl bg-slate-950/50 border border-slate-800 text-xs flex items-start space-x-3';
+                item.innerHTML = `
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono border font-bold uppercase shrink-0 ${prioBadge}">${r.priority}</span>
+                    <div>
+                        <div class="font-bold text-slate-200 font-mono tracking-tight">${r.action}</div>
+                        <div class="text-slate-400 mt-0.5 leading-relaxed">${r.desc}</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // On Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadRecentScans();
+        });
+    </script>
+</body>
+</html>
