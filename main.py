@@ -693,6 +693,7 @@ async def api_analyze(payload: AnalyzeRequest):
     return JSONResponse(content=result)
 
 @app.get("/api/analytics")
+@app.get("/api/model-stats")
 async def api_analytics_data():
     total_scans = len(RECENT_SCANS)
     malicious_count = sum(1 for s in RECENT_SCANS if s["verdict"] == "Malicious")
@@ -714,6 +715,7 @@ async def api_analytics_data():
     })
 
 @app.get("/api/sample-data")
+@app.get("/api/quick-samples")
 async def api_sample_data():
     samples = {
         "phishing_email": {
