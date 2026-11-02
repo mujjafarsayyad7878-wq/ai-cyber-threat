@@ -260,7 +260,7 @@
                         </h3>
                         <p class="text-xs text-slate-400 mt-0.5">Distribution across lifetime scanned vectors</p>
                     </div>
-                    <span id="totalScansCounter" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300">1,245 Total Scans</span>
+                    <span id="totalScansCounter" class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-800 text-slate-300">0 Total Scans</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center pt-2">
@@ -273,21 +273,21 @@
                                 <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                                 <span>Malicious Attacks</span>
                             </span>
-                            <span id="statMalicious" class="font-bold text-white">491 (39.4%)</span>
+                            <span id="statMalicious" class="font-bold text-white">0 (0%)</span>
                         </div>
                         <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
                             <span class="flex items-center space-x-2 text-amber-400">
                                 <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                                 <span>Suspicious Traps</span>
                             </span>
-                            <span id="statSuspicious" class="font-bold text-white">311 (25.0%)</span>
+                            <span id="statSuspicious" class="font-bold text-white">0 (0%)</span>
                         </div>
                         <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-between">
                             <span class="flex items-center space-x-2 text-emerald-400">
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                                 <span>Safe Communications</span>
                             </span>
-                            <span id="statSafe" class="font-bold text-white">443 (35.6%)</span>
+                            <span id="statSafe" class="font-bold text-white">0 (0%)</span>
                         </div>
                     </div>
                 </div>
@@ -427,10 +427,11 @@
 
                 // Update Stats
                 const stats = data.scan_stats || {};
-                document.getElementById('totalScansCounter').textContent = `${(stats.total_scans || 1245).toLocaleString()} Scans Logged`;
-                document.getElementById('statMalicious').textContent = `${stats.malicious_count} (${Math.round((stats.malicious_count / stats.total_scans) * 100)}%)`;
-                document.getElementById('statSuspicious').textContent = `${stats.suspicious_count} (${Math.round((stats.suspicious_count / stats.total_scans) * 100)}%)`;
-                document.getElementById('statSafe').textContent = `${stats.safe_count} (${Math.round((stats.safe_count / stats.total_scans) * 100)}%)`;
+                document.getElementById('totalScansCounter').textContent = `${(stats.total_scans || 0).toLocaleString()} Scans Logged`;
+                const totalForPct = stats.total_scans || 1;
+                document.getElementById('statMalicious').textContent = `${stats.malicious_count} (${Math.round((stats.malicious_count / totalForPct) * 100)}%)`;
+                document.getElementById('statSuspicious').textContent = `${stats.suspicious_count} (${Math.round((stats.suspicious_count / totalForPct) * 100)}%)`;
+                document.getElementById('statSafe').textContent = `${stats.safe_count} (${Math.round((stats.safe_count / totalForPct) * 100)}%)`;
 
                 // Render Charts
                 renderDoughnutChart(stats);
@@ -454,7 +455,7 @@
                 data: {
                     labels: ['Malicious', 'Suspicious', 'Safe'],
                     datasets: [{
-                        data: [stats.malicious_count || 490, stats.suspicious_count || 310, stats.safe_count || 440],
+                        data: [stats.malicious_count || 0, stats.suspicious_count || 0, stats.safe_count || 0],
                         backgroundColor: ['#ef4444', '#f59e0b', '#10b981'],
                         borderWidth: 0,
                         hoverOffset: 4

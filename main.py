@@ -595,48 +595,7 @@ def calculate_composite_risk(text: str, url: str) -> Dict[str, Any]:
 # 5. RECENT SCAN STORAGE & THREAT STATS
 # ==============================================================================
 
-RECENT_SCANS: List[Dict[str, Any]] = [
-    {
-        "id": "SCAN-901",
-        "timestamp": "2026-11-01 10:15:32",
-        "type": "URL & Text",
-        "summary": "PayPal Security Update (Spoofed Domain)",
-        "score": 92,
-        "verdict": "Malicious"
-    },
-    {
-        "id": "SCAN-902",
-        "timestamp": "2026-11-01 10:32:10",
-        "type": "Text Only",
-        "summary": "Engineering Sprint Standup Agenda",
-        "score": 8,
-        "verdict": "Safe"
-    },
-    {
-        "id": "SCAN-903",
-        "timestamp": "2026-11-01 11:05:44",
-        "type": "URL Only",
-        "summary": "http://185.220.101.5/login (Naked IP)",
-        "score": 88,
-        "verdict": "Malicious"
-    },
-    {
-        "id": "SCAN-904",
-        "timestamp": "2026-11-01 11:45:19",
-        "type": "Text & URL",
-        "summary": "Amazon Gift Card Prize via bit.ly/amz-claim",
-        "score": 68,
-        "verdict": "Suspicious"
-    },
-    {
-        "id": "SCAN-905",
-        "timestamp": "2026-11-01 12:10:02",
-        "type": "Text Only",
-        "summary": "Customer Support Feedback Confirmation",
-        "score": 12,
-        "verdict": "Safe"
-    }
-]
+RECENT_SCANS: List[Dict[str, Any]] = []
 
 # ==============================================================================
 # 6. API & TEMPLATE ROUTES
@@ -662,6 +621,18 @@ async def page_analytics(request: Request):
         context={"active_page": "analytics", "metrics": ml_engine.metrics}
     )
 
+@app.get("/download-report")
+async def download_word_report():
+    from fastapi.responses import FileResponse
+    doc_path = os.path.join(BASE_DIR, "Mujjafar_Sayyad_AI_Cyber_Threat_Project_Report.docx")
+    if os.path.exists(doc_path):
+        return FileResponse(
+            path=doc_path,
+            filename="Mujjafar_Sayyad_AI_Cyber_Threat_Project_Report.docx",
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+    return JSONResponse(status_code=404, content={"error": "Report file not found"})
+
 @app.get("/about", response_class=HTMLResponse)
 async def page_about(request: Request):
     return templates.TemplateResponse(
@@ -679,7 +650,7 @@ async def api_analyze(payload: AnalyzeRequest):
     if len(payload.url or payload.text or "") > 45:
         summary += "..."
     scan_record = {
-        "id": f"SCAN-{len(RECENT_SCANS) + 906}",
+        "id": f"SCAN-{len(RECENT_SCANS) + 1}",
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "type": "Text & URL" if (payload.text and payload.url) else ("URL Only" if payload.url else "Text Only"),
         "summary": summary,
@@ -705,10 +676,10 @@ async def api_analytics_data():
         "metrics": ml_engine.metrics,
         "top_features": ml_engine.top_features,
         "scan_stats": {
-            "total_scans": total_scans + 1240, # including simulated live pipeline aggregate
-            "malicious_count": malicious_count + 490,
-            "suspicious_count": suspicious_count + 310,
-            "safe_count": safe_count + 440,
+            "total_scans": total_scans,
+            "malicious_count": malicious_count,
+            "suspicious_count": suspicious_count,
+            "safe_count": safe_count,
             "avg_score": avg_score
         },
         "recent_scans": RECENT_SCANS[:10]
